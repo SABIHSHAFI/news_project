@@ -1,0 +1,23 @@
+requests
+python-dotenv
+transformers
+torch
+
+requests==2.32.3
+python-dotenv==1.1.0
+transformers==4.51.3
+torch==2.6.0
+
+
+project needs python 3.9.0
+
+
+#to run pytest
+
+pytest test_app.py
+
+docker build -t news_project .
+
+docker run -it news_project bash
+
+pytest test_app.py

@@ -1,0 +1,41 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Docker (build and test within Docker container)
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
+
+      # Step 3: Build Docker image
+      - name: Build Docker image
+        run: docker build -t news-project .
+
+      # Step 4: Run tests inside the container
+      - name: Run tests inside Docker container
+        run: |
+          docker run --rm news-project pytest test_app.py
+
+      # ✅ Step 5: Push the Docker image to Docker Hub (optional)
+      - name: Push to Docker Hub
+        run: |
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker tag news-project sabih10/news-project:latest
+          docker push sabih10/news-project:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
